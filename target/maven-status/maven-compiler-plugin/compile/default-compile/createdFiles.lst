@@ -1,0 +1,5 @@
+me\vout\condenser\Condenser.class
+me\vout\condenser\listeners\InventoryClickEvent.class
+me\vout\condenser\commands\CondenseCommand.class
+me\vout\condenser\helpers\GuiHelper.class
+me\vout\condenser\helpers\InventoryHelper.class

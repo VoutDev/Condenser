@@ -1,0 +1,9 @@
+name: Condenser
+version: '${project.version}'
+main: me.vout.condenser.Condenser
+api-version: '1.20'
+description: Condense materials
+commands:
+  condense:
+    description: Open condenser UI
+    usage: /condense

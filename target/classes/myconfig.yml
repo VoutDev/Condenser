@@ -1,0 +1,12 @@
+categories:
+  STONE:
+    blocks:
+      - STONE
+      - COBBLESTONE
+      - GRANITE
+      - ANDESITE
+  OAK_LOG:
+    blocks:
+      - OAK_PLANKS
+      - SPRUCE_PLANKS
+      - BIRCH_PLANKS

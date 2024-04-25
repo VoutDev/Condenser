@@ -1,0 +1,173 @@
+categories:
+  STONE:
+    name: Stone
+    lore: Compressible stone blocks
+    page_1:
+      - STONE
+      - COBBLESTONE
+      - MOSSY_COBBLESTONE
+      - SMOOTH_STONE
+      - STONE_BRICKS
+      - CRACKED_STONE_BRICKS
+      - CHISELED_STONE_BRICKS
+      - MOSSY_STONE_BRICKS
+      - GRANITE
+      - POLISHED_GRANITE
+      - DIORITE
+      - POLISHED_DIORITE
+      - ANDESITE
+      - POLISHED_ANDESITE
+      - DEEPSLATE
+      - COBBLED_DEEPSLATE
+      - CHISELED_DEEPSLATE
+      - POLISHED_DEEPSLATE
+      - DEEPSLATE_BRICKS
+      - CRACKED_DEEPSLATE_BRICKS
+      - DEEPSLATE_TILES
+      - CRACKED_DEEPSLATE_TILES
+      - TUFF
+      - CALCITE
+      - DRIPSTONE_BLOCK
+      - OBSIDIAN
+      - SMOOTH_BASALT
+  OAK_LOG:
+    name: Wood
+    lore: Compressible wood blocks
+    page_1:
+      - OAK_LOG
+      - OAK_WOOD
+      - STRIPPED_OAK_LOG
+      - STRIPPED_OAK_WOOD
+      - OAK_PLANKS
+      - SPRUCE_LOG
+      - SPRUCE_WOOD
+      - STRIPPED_SPRUCE_LOG
+      - STRIPPED_SPRUCE_WOOD
+      - SPRUCE_PLANKS
+      - BIRCH_LOG
+      - BIRCH_WOOD
+      - STRIPPED_BIRCH_LOG
+      - STRIPPED_BIRCH_WOOD
+      - BIRCH_PLANKS
+      - JUNGLE_LOG
+      - JUNGLE_WOOD
+      - STRIPPED_JUNGLE_LOG
+      - STRIPPED_JUNGLE_WOOD
+      - JUNGLE_PLANKS
+      - ACACIA_LOG
+      - STRIPPED_ACACIA_LOG
+      - STRIPPED_ACACIA_WOOD
+      - ACACIA_PLANKS
+      - DARK_OAK_LOG
+      - DARK_OAK_WOOD
+      - STRIPPED_DARK_OAK_LOG
+      - STRIPPED_DARK_OAK_WOOD
+      - DARK_OAK_PLANKS
+      - MANGROVE_LOG
+      - MANGROVE_WOOD
+      - STRIPPED_MANGROVE_LOG
+      - STRIPPED_MANGROVE_WOOD
+      - MANGROVE_PLANKS
+      - CHERRY_LOG
+      - CHERRY_WOOD
+      - STRIPPED_CHERRY_LOG
+    page_2:
+      - STRIPPED_CHERRY_WOOD
+      - CHERRY_PLANKS
+      - BAMBOO_BLOCK
+      - STRIPPED_BAMBOO_BLOCK
+      - BAMBOO_PLANKS
+      - BAMBOO_MOSAIC
+  WHITE_WOOL:
+    name: Colored
+    lore: Compressible colored blocks
+    page_1:
+      - WHITE_WOOL
+      - LIGHT_GRAY_WOOL
+      - BLACK_WOOL
+      - BROWN_WOOL
+      - RED_WOOL
+      - ORANGE_WOOL
+      - YELLOW_WOOL
+      - LIME_WOOL
+      - GREEN_WOOL
+      - CYAN_WOOL
+      - LIGHT_BLUE_WOOL
+      - BLUE_WOOL
+      - PURPLE_WOOL
+      - MAGENTA_WOOL
+      - PINK_WOOL
+      - TERRACOTTA
+      - WHITE_TERRACOTTA
+      - LIGHT_GRAY_TERRACOTTA
+      - GRAY_TERRACOTTA
+      - BLACK_TERRACOTTA
+      - BROWN_TERRACOTTA
+      - RED_TERRACOTTA
+      - ORANGE_TERRACOTTA
+      - YELLOW_TERRACOTTA
+      - LIME_TERRACOTTA
+      - GREEN_TERRACOTTA
+      - CYAN_TERRACOTTA
+      - LIGHT_BLUE_TERRACOTTA
+      - BLUE_TERRACOTTA
+      - PURPLE_TERRACOTTA
+      - MAGENTA_TERRACOTTA
+      - PINK_TERRACOTTA
+      - WHITE_CONCRETE
+      - LIGHT_GRAY_CONCRETE
+      - GRAY_CONCRETE
+      - BLACK_CONCRETE
+      - BROWN_CONCRETE
+    page_2:
+      - RED_CONCRETE
+      - ORANGE_CONCRETE
+      - YELLOW_CONCRETE
+      - LIME_CONCRETE
+      - GREEN_CONCRETE
+      - CYAN_CONCRETE
+      - LIGHT_BLUE_CONCRETE
+      - BLUE_CONCRETE
+      - PURPLE_CONCRETE
+      - MAGENTA_CONCRETE
+      - PINK_CONCRETE
+      - WHITE_CONCRETE_POWDER
+      - LIGHT_GRAY_CONCRETE_POWDER
+      - GRAY_CONCRETE_POWDER
+      - BLACK_CONCRETE_POWDER
+      - BROWN_CONCRETE_POWDER
+      - RED_CONCRETE_POWDER
+      - ORANGE_CONCRETE_POWDER
+      - YELLOW_CONCRETE_POWDER
+      - LIME_CONCRETE_POWDER
+      - GREEN_CONCRETE_POWDER
+      - CYAN_CONCRETE_POWDER
+      - LIGHT_BLUE_CONCRETE_POWDER
+      - BLUE_CONCRETE_POWDER
+      - PURPLE_CONCRETE_POWDER
+      - MAGENTA_CONCRETE_POWDER
+      - PINK_CONCRETE_POWDER
+      -
+      -
+      -
+      -
+      -
+      -
+      -
+      -
+      -
+      -
+
+utility:
+  back_arrow:
+    url: 528b8cf405eaf606a0210f0303b013179f8f12eaa95824129ebeef9e44b68230
+  next_arrow:
+    url: 5dcda6e3c6dca7e9b8b6ba3febf5cd0917f997b64b2aef18c3f773765e3a579
+  home:
+    url: 1c9848c70d0ca6c87c223b9503509dfd0d3294406703773441587b14c740c1c9
+  checkmark:
+    url: d4972e8925f79aae72eb9f62caf8a161a3891b51bb4fbd4f1f4bec5cb605bec5
+  border: BLACK_STAINED_GLASS_PANE
+
+  condense:
+    count: 9
