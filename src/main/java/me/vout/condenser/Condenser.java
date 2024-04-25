@@ -26,7 +26,7 @@ public final class Condenser extends JavaPlugin implements Listener {
             //This allows users to store heads anywhere, but they need the url path
             //If material is null, and url path doesn't give a skull. Create Bedrock item with the display name being the block, and lore being error message
         //Add 2 paths for border in utility. If second path is nothing, use first path for all borders.
-        //Otherwise have first be for all odd pages, and second be for all even pages
+        //Otherwise have first be for all odd pages, and second be for all even page
 
 
 
