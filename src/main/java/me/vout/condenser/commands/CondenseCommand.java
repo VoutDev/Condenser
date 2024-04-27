@@ -11,16 +11,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class CondenseCommand implements CommandExecutor {
 
     private FileConfiguration config;
+    private JavaPlugin plugin;
 
-    public CondenseCommand(FileConfiguration config) {
+    public CondenseCommand(FileConfiguration config, JavaPlugin plugin) {
         this.config = config;
+        this.plugin = plugin;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            GuiHelper.openInventory(player,config);
+            GuiHelper.openInventory(player,config,plugin,-1,1);
         }
         return true;
     }

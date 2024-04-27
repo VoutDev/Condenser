@@ -1,5 +1,6 @@
 package me.vout.condenser.helpers;
 
+import me.vout.condenser.models.BlockObject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,16 +23,38 @@ import java.util.*;
 
 public class GuiHelper {
 
-    public static void openInventory(Player player, FileConfiguration config) {
+    public static void openInventory(Player player, FileConfiguration config, JavaPlugin plugin, int currentPage, int categoryPage) {
         Inventory inventory = Bukkit.createInventory(player,45,"Condense Categories");
         ConfigurationSection section = config.getConfigurationSection("categories");
-        categoryGUI(section,inventory);
+        ConfigurationSection pageSection = section.getConfigurationSection("page_" + categoryPage);
+        categoryGUI(pageSection, config, plugin, inventory, currentPage, categoryPage);
         player.openInventory(inventory);
     }
 
-    private static void categoryGUI(ConfigurationSection section, Inventory inventory) {
+    private static void categoryGUI(ConfigurationSection section, FileConfiguration config, JavaPlugin plugin, Inventory inventory, int currentPage, int categoryPage) {
         Set<String> categoryKeys = section.getKeys(false);
-        int slot = 10;
+        int type = Integer.parseInt(config.getConfigurationSection("categories").getString("type"));
+        int slot;
+        int increment;
+
+        switch (type){
+            case 0: //Large
+                slot = 0;
+                increment = 1;
+                break;
+            case 1: //Medium
+                slot = 0;
+                increment = 2;
+                break;
+            case 2: //Small
+                slot = 1;
+                increment = 3;
+                break;
+            default:
+                slot = 0;
+                increment = 2;
+                break;
+        }
         for (String category : categoryKeys) {
             Material material = Material.matchMaterial(category);
             ConfigurationSection blockSection = section.getConfigurationSection(category);
@@ -48,11 +71,13 @@ public class GuiHelper {
                 item.setItemMeta(meta);
             }
             inventory.setItem(slot,item);
-            slot+=3;
+            slot+=increment;
         }
+        //Need to build the logic to show a next button for categories
+        helpButtons(inventory,config, plugin, currentPage, "", categoryPage);
     }
 
-    public static void subGUI(List<String> blocks, Player player, FileConfiguration config, JavaPlugin plugin, int currentPage, String category) {
+    public static void subGUI(List<String> blocks, Player player, FileConfiguration config, JavaPlugin plugin, int currentPage, String category, int categoryPage) {
         Inventory inventory = Bukkit.createInventory(player,54, "Compressible Blocks");
         int count = inventory.getSize();
         int slot =  0;
@@ -75,11 +100,11 @@ public class GuiHelper {
                 player.sendMessage(block);
             }
         }
-        helpButtons(inventory,config, plugin, currentPage, category);
+        helpButtons(inventory,config, plugin, currentPage, category, categoryPage);
         player.openInventory(inventory);
     }
 
-    public static void helpButtons(Inventory inventory, FileConfiguration config, JavaPlugin plugin, int currentPage, String category) {
+    public static void helpButtons(Inventory inventory, FileConfiguration config, JavaPlugin plugin, int currentPage, String category, int categoryPage) {
         Map<String, ItemStack> buttonMap = new HashMap<>();
         ConfigurationSection utilitySection = config.getConfigurationSection("utility");
         int invSize = inventory.getSize();
@@ -92,13 +117,24 @@ public class GuiHelper {
             inventory.setItem(i,item);
         }
 
-        if (currentPage - 1 > 0) {
-            buttonMap.put("Back", createSkullItem(getUtilityUrl(utilitySection,"back_arrow"),plugin,category));
+        if (currentPage == -1) { //Category case
+            if (categoryPage -1 > 0) {
+                buttonMap.put("Back", createSkullItem(getUtilityUrl(utilitySection,"back_arrow"),plugin,category, categoryPage));
+            }
+            if (pageExist(category,config, currentPage, categoryPage +1)) {
+                buttonMap.put("Next", createSkullItem(getUtilityUrl(utilitySection,"next_arrow"),plugin,category, categoryPage));
+            }
+            currentPage = categoryPage; //Bad method, needs refactoring to use 1 variable as page
+
+        } else if (currentPage > -1) {
+            if (currentPage - 1 > 0) {
+                buttonMap.put("Back", createSkullItem(getUtilityUrl(utilitySection,"back_arrow"),plugin,category, categoryPage));
+            }
+            if (pageExist(category,config, currentPage + 1,categoryPage)) {
+                buttonMap.put("Next", createSkullItem(getUtilityUrl(utilitySection,"next_arrow"),plugin,category, categoryPage));
+            }
         }
-        if (pageExist(category,config, currentPage + 1)) {
-            buttonMap.put("Next", createSkullItem(getUtilityUrl(utilitySection,"next_arrow"),plugin,category));
-        }
-        buttonMap.put("Home", createSkullItem(getUtilityUrl(utilitySection,"home"),plugin,category));
+        buttonMap.put("Home", createSkullItem(getUtilityUrl(utilitySection,"home"),plugin,category, categoryPage));
 
         for (Map.Entry<String, ItemStack> entry : buttonMap.entrySet()) {
             ItemStack item = entry.getValue();
@@ -129,7 +165,7 @@ public class GuiHelper {
         }
     }
 
-    public static void selectionGUI(Player player, Material material, int count, FileConfiguration config, JavaPlugin plugin, String category, int currentPage) {
+    public static void selectionGUI(Player player, Material material, int count, FileConfiguration config, JavaPlugin plugin, String category, int categoryPage,  int currentPage) {
         Inventory inventory = Bukkit.createInventory(player,36, "Uncompress Selection");
         int invSize = inventory.getSize();
         ItemStack item = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
@@ -191,14 +227,14 @@ public class GuiHelper {
 
         ConfigurationSection utilitySection = config.getConfigurationSection("utility");
 
-        item = GuiHelper.createSkullItem(GuiHelper.getUtilityUrl(utilitySection, "back_arrow"),plugin, category);
+        item = GuiHelper.createSkullItem(GuiHelper.getUtilityUrl(utilitySection, "back_arrow"),plugin, category, categoryPage);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.RED + "Page " + currentPage);
         item.setItemMeta(meta);
         inventory.setItem(invSize - 6,item);
 
 
-        item = GuiHelper.createSkullItem(GuiHelper.getUtilityUrl(utilitySection,"checkmark"),plugin, category);
+        item = GuiHelper.createSkullItem(GuiHelper.getUtilityUrl(utilitySection,"checkmark"),plugin, category, categoryPage);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + "Submit");
         item.setItemMeta(meta);
@@ -214,7 +250,7 @@ public class GuiHelper {
         player.openInventory(inventory);
     }
 
-    public static ItemStack createSkullItem(String textureUrl, JavaPlugin plugin, String category) {
+    public static ItemStack createSkullItem(String textureUrl, JavaPlugin plugin, String category, int categoryPage) {
         String url = "http://textures.minecraft.net/texture/" + textureUrl;
         try {
             ItemStack skullItem = new ItemStack(Material.PLAYER_HEAD);
@@ -224,7 +260,10 @@ public class GuiHelper {
             SkullMeta skullMeta = (SkullMeta) skullItem.getItemMeta();
             skullMeta.setOwnerProfile(playerProfile);
             skullMeta.getPersistentDataContainer().set(new NamespacedKey(plugin,"texture"), PersistentDataType.STRING, textureUrl);
-            skullMeta.getPersistentDataContainer().set(new NamespacedKey(plugin,"category"), PersistentDataType.STRING, category);
+            if (!Objects.equals(category, "")) {
+                skullMeta.getPersistentDataContainer().set(new NamespacedKey(plugin,"category"), PersistentDataType.STRING, category);
+                skullMeta.getPersistentDataContainer().set(new NamespacedKey(plugin,"categoryPage"), PersistentDataType.INTEGER, categoryPage);
+            }
             skullItem.setItemMeta(skullMeta);
             return skullItem;
         } catch (Exception e) {
@@ -247,30 +286,40 @@ public class GuiHelper {
     }
 
     public static String getCategoryForBlock(String block, FileConfiguration config) {
-        ConfigurationSection categories = config.getConfigurationSection("categories");
-        for (String category : categories.getKeys(false)) {
-            ConfigurationSection categorySection = categories.getConfigurationSection(category);
-            for (String pageKey : categorySection.getKeys(false)) {
-                if (categorySection.getStringList(pageKey).contains(block)) {
-                    return category;
+        ConfigurationSection categoriePages = config.getConfigurationSection("categories");
+        for (String categoryPage : categoriePages.getKeys(false)) {
+            ConfigurationSection categories = categoriePages.getConfigurationSection(categoryPage);
+            for (String category : categories.getKeys(false)) {
+                ConfigurationSection categorySection = categories.getConfigurationSection(category);
+                for (String pageKey : categorySection.getKeys(false)) {
+                    if (categorySection.getStringList(pageKey).contains(block)) {
+                        return category;
+                    }
                 }
             }
         }
         return null;
     }
 
-    public static List<String> getCategoryBlocks(String category, FileConfiguration config, int page) {
-        ConfigurationSection categorySection = config.getConfigurationSection("categories." + category);
+    public static BlockObject getCategoryBlocks(String category, int categoryPage, FileConfiguration config, int page) {
+        ConfigurationSection categorySection = config.getConfigurationSection("categories.page_" + categoryPage + "." + category);
         if (categorySection != null) {
-            return categorySection.getStringList("page_" + page);
+            return new BlockObject(categorySection.getStringList("page_" + page),categoryPage);
         }
         return null;
     }
 
-    public static boolean pageExist(String category, FileConfiguration config, int page) {
-        ConfigurationSection categorySection = config.getConfigurationSection("categories." + category);
-        if (categorySection != null) {
-            return categorySection.contains("page_" + page);
+    public static boolean pageExist(String category, FileConfiguration config, int blockPage, int categoryPage) {
+        if (blockPage == -1) { //Category page
+            ConfigurationSection categorySection = config.getConfigurationSection("categories");
+            if (categorySection != null) {
+                return categorySection.contains("page_" + categoryPage);
+            }
+        } else { //Condensed block page
+            ConfigurationSection categorySection = config.getConfigurationSection("categories.page_" + categoryPage + "." + category);
+            if (categorySection != null) {
+                return categorySection.contains("page_" + blockPage);
+            }
         }
         return false;
     }

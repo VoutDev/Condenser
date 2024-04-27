@@ -17,11 +17,7 @@ public final class Condenser extends JavaPlugin implements Listener {
         // Plugin startup logic
 
         //TO-DO
-        //Add pages for categories so more can be added, needs to also leverage help buttons
-            //Needs .yml update to add pages after categories, may break logic chains
         //Add logic so player can /condense CATEGORY/CATEGORY-DISPLAY_NAME
-        //Check to make sure the back page and next page are right. The current page should not equal either of them
-            //Ex: Back: Page 1, Next: Page 3 (means you are on page 2)
         //Add method that takes in a section and a block string. If Material.getMaterial(block) is null, grab the .url of the section.StringList(block).
             //This allows users to store heads anywhere, but they need the url path
             //If material is null, and url path doesn't give a skull. Create Bedrock item with the display name being the block, and lore being error message
@@ -35,7 +31,7 @@ public final class Condenser extends JavaPlugin implements Listener {
         saveDefaultCustomConfig();
         reloadCustomConfig(); //Needed for some reason
 
-        CondenseCommand condenseCommand = new CondenseCommand(customConfig);
+        CondenseCommand condenseCommand = new CondenseCommand(customConfig,this);
         getCommand("condense").setExecutor(condenseCommand);
         InventoryClickEvent clickEvent = new InventoryClickEvent(customConfig,this);
 

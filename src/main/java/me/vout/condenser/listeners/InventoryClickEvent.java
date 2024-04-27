@@ -3,9 +3,11 @@ package me.vout.condenser.listeners;
 import me.vout.condenser.commands.CondenseCommand;
 import me.vout.condenser.helpers.GuiHelper;
 import me.vout.condenser.helpers.InventoryHelper;
+import me.vout.condenser.models.BlockObject;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -39,9 +41,46 @@ public class InventoryClickEvent implements Listener {
 
         String title = player.getOpenInventory().getTitle();
         if (title.equals("Condense Categories")) {
-            List<String> blocks = GuiHelper.getCategoryBlocks(clickedItem.getType().name(), config, 1);
-            if (blocks != null) {
-                GuiHelper.subGUI(blocks,player,config,plugin,1,clickedItem.getType().name());
+            ConfigurationSection utilitySection = config.getConfigurationSection("utility");
+            if (clickedItem.getType() == Material.PLAYER_HEAD && clickedItem.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "texture"), PersistentDataType.STRING)) {
+                String textureUrl = clickedItem.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "texture"), PersistentDataType.STRING);
+                if (textureUrl.equals(GuiHelper.getUtilityUrl(utilitySection,"back_arrow"))) {
+                    String[] pageStr = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName()).split(" ");
+                    GuiHelper.openInventory(player,config,plugin,-1,Integer.parseInt(pageStr[1]));
+                } else if (textureUrl.equals(GuiHelper.getUtilityUrl(utilitySection,"next_arrow"))) {
+                    String[] pageStr = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName()).split(" ");
+                    GuiHelper.openInventory(player,config,plugin,-1,Integer.parseInt(pageStr[1]));
+                } else if (textureUrl.equals(GuiHelper.getUtilityUrl(utilitySection,"home"))) {
+                    player.closeInventory();
+                }
+            } else if (clickedItem.getType() != Material.AIR) {
+                int invSize = event.getInventory().getSize();
+                //Need a check if the next arrow is null (No further page), if so use the back arrow item to get the page number
+                ItemStack item = event.getInventory().getItem(invSize -2);
+                if (item == null) { //Using back arrow item
+                    item = event.getInventory().getItem(invSize - 8);
+                    if (item == null) { //If back arrow and next don't exist, only 1 page
+                        BlockObject blockObject = GuiHelper.getCategoryBlocks(clickedItem.getType().name(), 1 , config, 1);
+                        if (blockObject.getBlocks() != null) {
+                            GuiHelper.subGUI(blockObject.getBlocks(),player,config,plugin,1,clickedItem.getType().name(), blockObject.getCategoryPage());
+                        }
+                    } else if (item != null) {
+                        String[] pageStr = item.getItemMeta().getDisplayName().split(" ");
+                        int categoryPage = Integer.parseInt(pageStr[1]) + 1;
+                        BlockObject blockObject = GuiHelper.getCategoryBlocks(clickedItem.getType().name(), categoryPage , config, 1);
+                        if (blockObject.getBlocks() != null) {
+                            GuiHelper.subGUI(blockObject.getBlocks(),player,config,plugin,1,clickedItem.getType().name(), blockObject.getCategoryPage());
+                        }
+                    }
+
+                } else if (item != null) { //Using next arrow item
+                    String[] pageStr = item.getItemMeta().getDisplayName().split(" ");
+                    int categoryPage = Integer.parseInt(pageStr[1]) - 1;
+                    BlockObject blockObject = GuiHelper.getCategoryBlocks(clickedItem.getType().name(), categoryPage , config, 1);
+                    if (blockObject.getBlocks() != null) {
+                        GuiHelper.subGUI(blockObject.getBlocks(),player,config,plugin,1,clickedItem.getType().name(), blockObject.getCategoryPage());
+                    }
+                }
             }
             event.setCancelled(true);
         } else if (title.equals("Uncompress Selection")) {
@@ -62,9 +101,11 @@ public class InventoryClickEvent implements Listener {
                             player.getInventory().addItem(item);
                             String blockCategory = GuiHelper.getCategoryForBlock(item.getType().name(),config);
                             int invSize = event.getInventory().getSize();
-                            String[] pageStr =  event.getInventory().getItem(invSize - 6).getItemMeta().getDisplayName().split(" ");
+                            ItemStack backItem = event.getInventory().getItem(invSize - 6);
+                            int categoryPage = backItem.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "categoryPage"), PersistentDataType.INTEGER);
+                            String[] pageStr =  backItem.getItemMeta().getDisplayName().split(" ");
                             int page = Integer.parseInt(pageStr[1]);
-                            GuiHelper.selectionGUI(player,itemMaterial.getType(),0,config,plugin,blockCategory,page);
+                            GuiHelper.selectionGUI(player, itemMaterial.getType(), 0, config, plugin, blockCategory, categoryPage, page);
                             return;
                         } else {
                             player.closeInventory();
@@ -73,12 +114,12 @@ public class InventoryClickEvent implements Listener {
                     }
                 } else if (textureUrl.equals(GuiHelper.getUtilityUrl(utilitySection,"back_arrow"))) {
                     String[] pageStr = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName()).split(" ");
-                    ItemStack itemMaterial = player.getOpenInventory().getItem(13);
-                    String blockCategory = GuiHelper.getCategoryForBlock(itemMaterial.getType().name(),config);
+                    String blockCategory = clickedItem.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "category"), PersistentDataType.STRING);
                     if (blockCategory != null) {
-                        List<String> blocks = GuiHelper.getCategoryBlocks(blockCategory,config,Integer.parseInt(pageStr[1]));
-                        if (blocks != null) {
-                            GuiHelper.subGUI(blocks,player,config,plugin, Integer.parseInt(pageStr[1]),blockCategory);
+                        int categoryPage = clickedItem.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "categoryPage"), PersistentDataType.INTEGER);
+                        BlockObject blockObject = GuiHelper.getCategoryBlocks(blockCategory,categoryPage ,config,Integer.parseInt(pageStr[1]));
+                        if (blockObject.getBlocks() != null) {
+                            GuiHelper.subGUI(blockObject.getBlocks(),player,config,plugin, Integer.parseInt(pageStr[1]),blockCategory, blockObject.getCategoryPage());
                         }
                     }
                 }
@@ -124,9 +165,11 @@ public class InventoryClickEvent implements Listener {
                 }
                 String blockCategory = GuiHelper.getCategoryForBlock(itemMaterial.getType().name(),config);
                 int invSize = event.getInventory().getSize();
-                String[] pageStr =  event.getInventory().getItem(invSize - 6).getItemMeta().getDisplayName().split(" ");
+                ItemStack backButton = event.getInventory().getItem(invSize - 6);
+                String[] pageStr =  backButton.getItemMeta().getDisplayName().split(" ");
+                int categoryPage = backButton.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "categoryPage"), PersistentDataType.INTEGER);
                 int page = Integer.parseInt(pageStr[1]);
-                GuiHelper.selectionGUI(player,itemMaterial.getType(),count,config,plugin,blockCategory,page);
+                GuiHelper.selectionGUI(player,itemMaterial.getType(),count,config,plugin,blockCategory,categoryPage, page);
             }
             event.setCancelled(true);
 
@@ -137,21 +180,35 @@ public class InventoryClickEvent implements Listener {
                 if (textureUrl.equals(GuiHelper.getUtilityUrl(utilitySection,"back_arrow"))) {
                     String[] pageStr = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName()).split(" ");
                     String blockCategory = clickedItem.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "category"), PersistentDataType.STRING);
-                    List<String> blocks = GuiHelper.getCategoryBlocks(blockCategory,config,Integer.parseInt(pageStr[1]));
-                    if (blocks != null) {
-                        GuiHelper.subGUI(blocks,player,config,plugin,Integer.parseInt(pageStr[1]),blockCategory);
+                    int categoryPage = clickedItem.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "categoryPage"), PersistentDataType.INTEGER);
+                    BlockObject blockObject = GuiHelper.getCategoryBlocks(blockCategory,categoryPage, config,Integer.parseInt(pageStr[1]));
+                    if (blockObject.getBlocks() != null) {
+                        GuiHelper.subGUI(blockObject.getBlocks(),player,config,plugin,Integer.parseInt(pageStr[1]),blockCategory, blockObject.getCategoryPage());
                     }
 
                 } else if (textureUrl.equals(GuiHelper.getUtilityUrl(utilitySection,"next_arrow"))) {
                     String[] pageStr = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName()).split(" ");
                     String blockCategory = clickedItem.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "category"), PersistentDataType.STRING);
-                    List<String> blocks = GuiHelper.getCategoryBlocks(blockCategory,config,Integer.parseInt(pageStr[1]));
-                    if (blocks != null) {
-                        GuiHelper.subGUI(blocks,player,config,plugin,Integer.parseInt(pageStr[1]),blockCategory);
+                    int categoryPage = clickedItem.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "categoryPage"), PersistentDataType.INTEGER);
+                    BlockObject blockObject= GuiHelper.getCategoryBlocks(blockCategory, categoryPage,config,Integer.parseInt(pageStr[1]));
+                    if (blockObject.getBlocks() != null) {
+                        GuiHelper.subGUI(blockObject.getBlocks(),player,config,plugin,Integer.parseInt(pageStr[1]),blockCategory, blockObject.getCategoryPage());
                     }
 
                 } else if (textureUrl.equals(GuiHelper.getUtilityUrl(utilitySection,"home"))) {
-                    GuiHelper.openInventory(player,config);
+                    int invSize = event.getInventory().getSize();
+                    //Need a check if the next arrow is null (No further page), if so use the back arrow item to get the page number
+                    ItemStack item = event.getInventory().getItem(invSize -2);
+                    int categoryPage = 1;
+                    if (item == null) { //Using back arrow item
+                        item = event.getInventory().getItem(invSize - 8);
+                        if (item != null) {
+                            categoryPage = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "categoryPage"), PersistentDataType.INTEGER);
+                        }
+                    } else { //Using next arrow item
+                        categoryPage = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "categoryPage"), PersistentDataType.INTEGER);
+                    }
+                    GuiHelper.openInventory(player,config,plugin,-1,categoryPage);
                 }
             } else if (clickedItem.getType() != Material.AIR && event.getClick() == ClickType.LEFT) {
                 ItemStack item = new ItemStack(clickedItem.getType());
@@ -185,19 +242,21 @@ public class InventoryClickEvent implements Listener {
                     item = event.getInventory().getItem(invSize - 8);
                     if (item == null) { //If back arrow and next don't exist, only 1 page
                         String blockCategory = GuiHelper.getCategoryForBlock(clickedItem.getType().name(),config);
-                        GuiHelper.selectionGUI(player,clickedItem.getType(),0,config,plugin,blockCategory,1);
+                        GuiHelper.selectionGUI(player,clickedItem.getType(),0,config,plugin,blockCategory,1,1);
                     } else if (item != null) {
                         String[] pageStr = item.getItemMeta().getDisplayName().split(" ");
                         int page = Integer.parseInt(pageStr[1]) + 1;
-                        String blockCategory = GuiHelper.getCategoryForBlock(clickedItem.getType().name(),config);
-                        GuiHelper.selectionGUI(player,clickedItem.getType(),0,config,plugin,blockCategory,page);
+                        int categoryPage = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "categoryPage"), PersistentDataType.INTEGER);
+                        String blockCategory = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "category"), PersistentDataType.STRING);
+                        GuiHelper.selectionGUI(player,clickedItem.getType(),0,config,plugin,blockCategory,categoryPage,page);
                     }
 
                 } else if (item != null) { //Using next arrow item
                     String[] pageStr = item.getItemMeta().getDisplayName().split(" ");
                     int page = Integer.parseInt(pageStr[1]) - 1;
-                    String blockCategory = GuiHelper.getCategoryForBlock(clickedItem.getType().name(),config);
-                    GuiHelper.selectionGUI(player,clickedItem.getType(),0,config,plugin,blockCategory,page);
+                    int categoryPage = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "categoryPage"), PersistentDataType.INTEGER);
+                    String blockCategory = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "category"), PersistentDataType.STRING);
+                    GuiHelper.selectionGUI(player,clickedItem.getType(),0,config,plugin,blockCategory,categoryPage,page);
                 }
             }
             event.setCancelled(true);
