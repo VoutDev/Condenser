@@ -240,8 +240,10 @@ public class InventoryClickEvent implements Listener {
                 ItemStack item = event.getInventory().getItem(invSize -2);
                 if (item == null) { //Using back arrow item
                     item = event.getInventory().getItem(invSize - 8);
-                    if (item == null) { //If back arrow and next don't exist, only 1 page
-                        String blockCategory = GuiHelper.getCategoryForBlock(clickedItem.getType().name(),config);
+                    if (item == null) { //If back arrow and next don't exist, only 1 page using home item
+                        //String blockCategory = GuiHelper.getCategoryForBlock(clickedItem.getType().name(),config);
+                        ItemStack home = event.getInventory().getItem(invSize -5);
+                        String blockCategory = home.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "category"), PersistentDataType.STRING);
                         GuiHelper.selectionGUI(player,clickedItem.getType(),0,config,plugin,blockCategory,1,1);
                     } else if (item != null) {
                         String[] pageStr = item.getItemMeta().getDisplayName().split(" ");
