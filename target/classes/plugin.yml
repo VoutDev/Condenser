@@ -7,3 +7,6 @@ commands:
   condense:
     description: Open condenser UI
     usage: /condense
+  reloadCategories:
+    description: Reload categories yml file
+    usage: /reloadCategories

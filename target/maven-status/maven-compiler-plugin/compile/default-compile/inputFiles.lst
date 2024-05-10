@@ -1,6 +1,9 @@
-C:\Users\koty2\IdeaProjects\Condenser\src\main\java\me\vout\condenser\commands\CondenseCommand.java
-C:\Users\koty2\IdeaProjects\Condenser\src\main\java\me\vout\condenser\listeners\InventoryClickEvent.java
-C:\Users\koty2\IdeaProjects\Condenser\src\main\java\me\vout\condenser\models\BlockObject.java
-C:\Users\koty2\IdeaProjects\Condenser\src\main\java\me\vout\condenser\Condenser.java
-C:\Users\koty2\IdeaProjects\Condenser\src\main\java\me\vout\condenser\helpers\InventoryHelper.java
-C:\Users\koty2\IdeaProjects\Condenser\src\main\java\me\vout\condenser\helpers\GuiHelper.java
+C:\Plugins\Condenser\src\main\java\me\vout\condenser\models\CondenserInventory.java
+C:\Plugins\Condenser\src\main\java\me\vout\condenser\helpers\InventoryHelper.java
+C:\Plugins\Condenser\src\main\java\me\vout\condenser\listeners\BlockPlaceEvent.java
+C:\Plugins\Condenser\src\main\java\me\vout\condenser\models\BlockObject.java
+C:\Plugins\Condenser\src\main\java\me\vout\condenser\helpers\GuiHelper.java
+C:\Plugins\Condenser\src\main\java\me\vout\condenser\listeners\InventoryClickEvent.java
+C:\Plugins\Condenser\src\main\java\me\vout\condenser\commands\ReloadCommand.java
+C:\Plugins\Condenser\src\main\java\me\vout\condenser\commands\CondenseCommand.java
+C:\Plugins\Condenser\src\main\java\me\vout\condenser\Condenser.java

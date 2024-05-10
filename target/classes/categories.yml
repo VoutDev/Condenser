@@ -1,3 +1,17 @@
+utility:
+  back_arrow:
+    url: 528b8cf405eaf606a0210f0303b013179f8f12eaa95824129ebeef9e44b68230
+  next_arrow:
+    url: 5dcda6e3c6dca7e9b8b6ba3febf5cd0917f997b64b2aef18c3f773765e3a579
+  home:
+    url: 1c9848c70d0ca6c87c223b9503509dfd0d3294406703773441587b14c740c1c9
+  checkmark:
+    url: d4972e8925f79aae72eb9f62caf8a161a3891b51bb4fbd4f1f4bec5cb605bec5
+  condense:
+    count: 9
+  border: BLACK_STAINED_GLASS_PANE
+  open_gui: true
+
 categories:
   type: 0
   page_1:
@@ -206,17 +220,3 @@ categories:
         - OAK_WOOD
       page_2:
         - SCULK_SENSOR
-
-utility:
-  back_arrow:
-    url: 528b8cf405eaf606a0210f0303b013179f8f12eaa95824129ebeef9e44b68230
-  next_arrow:
-    url: 5dcda6e3c6dca7e9b8b6ba3febf5cd0917f997b64b2aef18c3f773765e3a579
-  home:
-    url: 1c9848c70d0ca6c87c223b9503509dfd0d3294406703773441587b14c740c1c9
-  checkmark:
-    url: d4972e8925f79aae72eb9f62caf8a161a3891b51bb4fbd4f1f4bec5cb605bec5
-  border: BLACK_STAINED_GLASS_PANE
-
-  condense:
-    count: 9

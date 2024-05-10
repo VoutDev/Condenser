@@ -1,6 +1,9 @@
 me\vout\condenser\Condenser.class
 me\vout\condenser\listeners\InventoryClickEvent.class
+me\vout\condenser\commands\ReloadCommand.class
 me\vout\condenser\commands\CondenseCommand.class
 me\vout\condenser\helpers\GuiHelper.class
 me\vout\condenser\helpers\InventoryHelper.class
+me\vout\condenser\models\CondenserInventory.class
+me\vout\condenser\listeners\BlockPlaceEvent.class
 me\vout\condenser\models\BlockObject.class
