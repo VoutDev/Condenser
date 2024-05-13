@@ -28,7 +28,6 @@ public class InventoryHelper {
         removeSpecificItems(player,removeItem,removeCount);
         for (int i=0; i < addItemStacks.size(); i++) {
             HashMap<Integer, ItemStack> remainingItems = inventory.addItem(addItemStacks.get(i).clone());
-            System.out.println(addItemStacks.size());
             if (!remainingItems.isEmpty()){
                 inventory.setContents(cloneContents);
                 return false;
@@ -42,6 +41,7 @@ public class InventoryHelper {
         try {
             int cost = Integer.parseInt(utilitySection.getString("condense.count"));
             int result;
+            int[] itemArray;
             if (isCompress)
                 result = itemCount / cost;
             else
@@ -49,16 +49,23 @@ public class InventoryHelper {
             int stacks = result / 64;
             int items = result % 64;
             List<ItemStack> blocks = new ArrayList<>();
-            int[] itemArray = (items > 0 && stacks > 0) ? new int[stacks + 1] :
-                    (items > 0) ? new int[1] :
-                            (stacks > 0) ? new int[stacks] :
-                                    new int[0];
+            if (item.getMaxStackSize() == 1 && Boolean.parseBoolean(utilitySection.getString("condense_unstackable"))) {
+                itemArray = new int[result];
+                for (int i=0; i < result; i++) {
+                    itemArray[i] = 1;
+                }
+            } else {
+                itemArray = (items > 0 && stacks > 0) ? new int[stacks + 1] :
+                        (items > 0) ? new int[1] :
+                                (stacks > 0) ? new int[stacks] :
+                                        new int[0];
 
-            for (int i = 0; i < stacks; i++) {
-                itemArray[i] = 64;
-            }
-            if (items > 0) {
-                itemArray[itemArray.length - 1] = items;
+                for (int i = 0; i < stacks; i++) {
+                    itemArray[i] = 64;
+                }
+                if (items > 0) {
+                    itemArray[itemArray.length - 1] = items;
+                }
             }
 
             for (int i = 0; i < itemArray.length; i++) {
@@ -81,7 +88,7 @@ public class InventoryHelper {
                 return true;
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+
         }
         return false;
     }
@@ -136,8 +143,6 @@ public class InventoryHelper {
         }
         if (remainingQuantity == 0) {
             player.getInventory().setContents(contents);
-        } else {
-            System.out.println(remainingQuantity);
         }
     }
 

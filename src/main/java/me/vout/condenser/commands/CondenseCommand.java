@@ -37,6 +37,10 @@ public class CondenseCommand implements CommandExecutor {
                 int itemCount = InventoryHelper.getItemCount(player.getInventory(), heldItem);
                 int cost = Integer.parseInt(utilitySection.getString("condense.count"));
                 Enchantment enchantment = heldItem.getEnchantments().keySet().stream().findFirst().orElse(null);
+                if (heldItem.getMaxStackSize() == 1 && !Boolean.parseBoolean(utilitySection.getString("condense_unstackable"))) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(ChatColor.RED + "Cannot condense non-stackable items!"));
+                    return true;
+                }
                if (enchantment == null) {
                    if (itemCount/cost <= 0) {
                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(ChatColor.RED + "Need " + (cost - itemCount) + " more " + heldItem.getItemMeta().getDisplayName() + " to compress!"));

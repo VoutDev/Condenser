@@ -11,6 +11,7 @@ utility:
     count: 9
   border: BLACK_STAINED_GLASS_PANE
   open_gui: true
+  condense_unstackable: false
 
 categories:
   type: 0
